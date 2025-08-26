@@ -20,7 +20,7 @@ class UserOut(BaseModel):
     """Schema for User output."""
     id: int
     email: EmailStr
-    created_at: datetime
+    # created_at: datetime
 
     class Config:
         """Pydantic configuration."""
@@ -76,6 +76,32 @@ class Vote(BaseModel):
     """Schema for Vote."""
     post_id: Annotated[int, Field(ge=1)]
     dir: Annotated[int, Field(ge=0, le=1)]
+
+    class Config:
+        """Pydantic configuration."""
+        from_attributes = True
+
+
+class CommentBase(BaseModel):
+    """Base model for Comment schema."""
+    content: Annotated[str, Field(max_length=800)]
+
+
+class CommentCreate(CommentBase):
+    """Schema for creating a new Comment."""
+    post_id: Annotated[int, Field(ge=1)]
+
+
+class CommentUpdate(CommentBase):
+    """Schema for updating Comment"""
+
+
+class Comment(CommentBase):
+    """Schema for Comment with ID."""
+    id: int
+    created_at: datetime
+    post_id: int
+    owner: UserOut
 
     class Config:
         """Pydantic configuration."""
