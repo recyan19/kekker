@@ -1,7 +1,7 @@
 """CRUD operations for comments in a FastAPI application."""
-from typing import List
+from typing import List, Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, status, Response, Depends
+from fastapi import APIRouter, HTTPException, status, Response, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc
 
@@ -13,8 +13,10 @@ router = APIRouter(prefix="/comments", tags=["Comments"])
 
 
 @router.get("/", response_model=List[schemas.Comment])
-def get_comments(post_id: int, limit: int = 10, skip: int = 0,
-                 order: str = "desc",
+def get_comments(post_id: int,
+                 limit: Annotated[int, Query(ge=1, le=50)] = 10,
+                 skip: Annotated[int, Query(ge=0)] = 0,
+                 order: Annotated[Literal["asc", "desc"], Query()] = "desc",
                  db: Session = Depends(get_db),
                  current_user: models.User = Depends(oauth2.get_current_user)):  # pylint: disable=unused-argument
     """ Get comments by Post id"""
