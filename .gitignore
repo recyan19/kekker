@@ -6,3 +6,4 @@ venv/
 *.vscode
 .cache
 .env.*
+.pytest_cache
